@@ -1,0 +1,9 @@
+{
+  "name": "锂离子电池",
+  "un_numbers_pass": false,
+  "params": "3.7V 800mAh 2.96Wh",
+  "ref_version2": "第七版修订1",
+  "issue_date2": "2023-07-29",
+  "size": "120mm*80mm*20mm",
+  "model": "1208020"
+}

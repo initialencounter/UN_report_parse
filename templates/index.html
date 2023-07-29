@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh">
+<style>
+    .drop {
+        position: relative;
+        width: 30rem;
+        height: 18rem;
+        border: 1px solid gray;
+        line-height: 14rem;
+        text-align: center;
+        background-color: aquamarine;
+        border-radius: 1rem 1rem 1rem 1rem;
+        left: 20%;
+    }
+    .table {
+        padding: 1rem;
+        position: relative;
+        width: 30rem;
+        text-align: center;
+        background-color: rgb(143, 217, 211);
+        left: 20%;
+    }
+    .value_prefix {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .value {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .alert {
+        padding: 15px;
+        background-color: #3ee15e;
+        color: rgb(37, 54, 74);
+        display: none;
+        position: fixed;
+        top: 15px;
+        left: 60%;
+        z-index: 9999;
+    }
+    .status {
+        position: relative;
+        font-size: 2.2rem;
+        margin: 1.5rem auto;
+        font-weight: 600;
+        line-height: 1.5;
+        left: 20%;
+    }
+</style>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>UN Report Parser | UN 报告解析器</title>
+</head>
+
+<body>
+    <p class="status">一切就绪！</p>
+    <div class="drop" id="drop">
+        请把报告拖至于此
+    </div>
+    <div id="alertBox" class="alert"></div>
+    <br>
+    <table class="table" border="1">
+        <tr>
+            <td class="value_prefix">样品名称：</td>
+            <td class="value" id="name">200</td>
+        </tr>
+        <tr>
+            <td class="value_prefix">UN 编号：</td>
+            <td class="value" id="un_numbers_pass">200</td>
+        </tr>
+        <tr>
+            <td class="value_prefix">参数：</td>
+            <td class="value" id="params">200</td>
+        </tr>
+        <tr>
+            <td class="value_prefix">测试标准：</td>
+            <td class="value" id="ref_version2">200</td>
+        </tr>
+        <tr>
+            <td class="value_prefix">签发日期：</td>
+            <td class="value" id="issue_date2">200</td>
+        </tr>
+        <tr>
+            <td class="value_prefix">尺寸：</td>
+            <td class="value" id="size">200</td>
+        </tr>
+        <tr>
+            <td class="value_prefix">型号</td>
+            <td class="value" id="model">200</td>
+        </tr>
+    </table>
+
+
+</body>
+<script>
+    let status = document.getElementById("status");
+    let dropBox = document.querySelector('#drop');
+    let name = document.getElementById('name');
+    let un_numbers_pass = document.getElementById("un_numbers_pass");
+    let params = document.getElementById("params");
+    let ref_version2 = document.getElementById("ref_version2");
+    let issue_date2 = document.getElementById("issue_date2");
+    let size = document.getElementById("size");
+    let model = document.getElementById("model");
+
+    dropBox.addEventListener('dragover', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+    })
+    dropBox.addEventListener('drop', function (e) {
+        e.stopPropagation();
+        e.preventDefault();
+        let dataTransfer = e.dataTransfer;
+        let files = dataTransfer.files;
+        handleFiles(files);
+    })
+
+    function handleFiles(files) {
+
+        var file = files[0];
+        var formData = new FormData();
+        formData.append('file', file);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                showAlert("解析成功");
+                var json_data = JSON.parse(xhr.response)
+                name.innerText = json_data["name"];
+                un_numbers_pass.innerText = json_data["un_numbers_pass"];
+                params.innerText = json_data["params"];
+                ref_version2.innerText = json_data["params"];
+                issue_date2.innerText = json_data["issue_date2"];
+                size.innerText = json_data["size"];
+                model.innerText = json_data["model"];
+            }
+        };
+        xhr.send(formData);
+        showAlert("上传成功，解析中");
+    }
+    /**
+        * 弹出式提示框，默认1.2秒自动消失
+        * @param msg 提示信息
+        */
+    function showAlert(msg) {
+        var alertBox = document.getElementById("alertBox");
+        alertBox.style.display = "block";
+        alertBox.innerHTML = msg;
+        setTimeout(function () {
+            alertBox.style.display = "none";
+        }, 1500); // 3秒后自动隐藏
+    }
+
+</script>
+
+</html>
