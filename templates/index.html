@@ -1,5 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>UN Report Parser | UN 报告解析器</title>
+</head>
 <style>
     .drop {
         position: relative;
@@ -12,6 +18,7 @@
         border-radius: 1rem 1rem 1rem 1rem;
         left: 20%;
     }
+
     .table {
         padding: 1rem;
         position: relative;
@@ -20,6 +27,7 @@
         background-color: rgb(143, 217, 211);
         left: 20%;
     }
+
     .value_prefix {
         padding-left: 0.5rem;
         padding-right: 0.5rem;
@@ -40,6 +48,7 @@
         left: 60%;
         z-index: 9999;
     }
+
     .status {
         position: relative;
         font-size: 2.2rem;
@@ -49,12 +58,6 @@
         left: 20%;
     }
 </style>
-
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="utf-8">
-    <title>UN Report Parser | UN 报告解析器</title>
-</head>
 
 <body>
     <p class="status">一切就绪！</p>
@@ -120,7 +123,7 @@
     })
 
     function handleFiles(files) {
-
+        var time1 = new Date().getTime()
         var file = files[0];
         var formData = new FormData();
         formData.append('file', file);
@@ -128,7 +131,8 @@
         xhr.open('POST', '/');
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4 && xhr.status === 200) {
-                showAlert("解析成功");
+                var time2 = new Date().getTime()
+                showAlert(`解析成功,用时${time2 - time1}`);
                 var json_data = JSON.parse(xhr.response)
                 name.innerText = json_data["name"];
                 un_numbers_pass.innerText = json_data["un_numbers_pass"];
